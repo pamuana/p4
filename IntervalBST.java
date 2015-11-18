@@ -17,6 +17,7 @@ public class IntervalBST<K extends Interval> implements SortedListADT<K> {
         if(root == null){
             IntervalBSTnode<K> newNode = new IntervalBSTnode<K>(key);
             root = newNode;
+            size++;
             return;
         }
         insert(key, root);

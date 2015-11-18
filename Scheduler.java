@@ -109,12 +109,12 @@ public class Scheduler {
                 printEventList(schedulerDB.getAllEvents());
                 break;
             case "t": // resource,
-                printEventList(schedulerDB.getEventsInReource(scanner.nextLine().trim()));
+//                printEventList(schedulerDB.getEventsInReource(scanner.nextLine().trim()));
                 break;
             case "s": // start end resource,
-                printEventList(schedulerDB.getEventsInRangeInReource(
-                        convertToTime(scanner.next()), convertToTime(scanner.next()),
-                        scanner.nextLine().trim()));
+//                printEventList(schedulerDB.getEventsInRangeInReource(
+//                        convertToTime(scanner.next()), convertToTime(scanner.next()),
+//                        scanner.nextLine().trim()));
                 break;
             case "o": // organization
                 printEventList(schedulerDB.getEventsForOrg(scanner.nextLine().trim()));
