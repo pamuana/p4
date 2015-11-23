@@ -45,6 +45,39 @@ public class IntervalBST<K extends Interval> implements SortedListADT<K> {
     public boolean delete(K key) {
         //check if key exists in tree
         if(lookup(key) == null) return false;
+        if(root.getKey().equals(key)){
+            //case that the root is the node we wish to delete
+            //now replace that node with the in-order successor or predescessor
+
+            if(root.getLeft() != null){
+                //use in-order predecessor
+                IntervalBSTnode<K> curr = root.getLeft();
+                IntervalBSTnode<K> parent = root;
+                while(curr.getRight() != null){
+                    parent = curr;
+                    curr = curr.getRight();
+                }
+                root = curr;
+                parent.setRight(null);
+            }
+            if(root.getLeft() == null && root.getRight() != null){
+                //use in-order successor
+                IntervalBSTnode<K> curr = root.getRight();
+                IntervalBSTnode<K> parent = root;
+                while(curr.getRight() != null){
+                    parent = curr;
+                    curr = curr.getLeft();
+
+                }
+                root = curr;
+                parent.setLeft(null);
+            }
+            if(root.getLeft() == null && root.getRight() == null){
+                root = null;
+            }
+            size--;
+            return true;
+        }
         return delete(key , null, root);
     }
 
