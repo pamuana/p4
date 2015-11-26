@@ -5,11 +5,10 @@ import java.util.*;
 
 
 public class SchedulerDB {
-    //TODO add private data members
+    IntervalBST<Resource> resources;
 
     SchedulerDB(){
-        //TODO Remove this exception and implement the method
-        throw new RuntimeException("Constructor not implemented.");
+        resources = = new IntervalBST<Resource>();
     }
 
     public boolean addResource(String resource){
