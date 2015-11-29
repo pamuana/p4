@@ -32,14 +32,37 @@ public class Scheduler {
     }
 
     private static boolean initializeFromInputFile(String resourceListFile) {
-
-        //TODO Remove this exception and implement the method
-		/*
-		 * You will read the contents of the input file using Java File IO and
-		 * then process them to initialize your database
-		 */
-        throw new RuntimeException("initializeFromInputFile() not implemented.");
-    }
+		try {
+			Scanner scnr = new Scanner(new File(resourceListFile));
+			SimpleDateFormat f = new SimpleDateFormat("mm/dd/yyyy,hh:mm");
+			String currentResourceName = null;
+			while (scnr.hasNextLine()) {
+				String temp = scnr.nextLine();
+				if (temp.equals("#Resource: ")) {
+					String reName = scnr.nextLine();
+					schedulerDB.addResource(reName);
+					currentResourceName = reName;
+				}
+				else{
+					String name = temp;
+					String start = scnr.nextLine();
+					String end = scnr.nextLine();
+					String org = scnr.nextLine();
+					String description = scnr.nextLine();
+					Date startDate = f.parse(start);
+					long startLong = startDate.getTime();
+					Date endDate = f.parse(end);
+					long endLong = endDate.getTime();
+					schedulerDB.addEvent(currentResourceName, startLong, endLong, name, org, description);
+				}
+			}
+			scnr.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
     private static void processUserCommands() {
         scanner = new Scanner(System.in);
