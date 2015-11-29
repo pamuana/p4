@@ -82,11 +82,17 @@ public class Event implements Interval{
 
     @Override
     public String toString(){
+    	SimpleDateFormat f = new SimpleDateFormat("mm/dd/yyyy,hh:mm");
+    	 Date dateStart = new Date(start);
+    	 Date dateEnd = new Date(end);
+    	 
+         String startString = f.format(dateStart);
+         String endString = f.format(dateEnd);
         return name + "\n" +
                 "By: " + organization + "\n"+
                 "In: " + resource + "\n" +
-                "Start: " + start + " \n" +
-                "End: " + end + "\n" +
+                "Start: " + startString + " \n" +
+                "End: " + endString + "\n" +
                 "Description: " + description;
     }
 }
