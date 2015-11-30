@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +19,9 @@ public class Scheduler {
             System.exit(1);
         }
 
-        boolean didInitialize =
-                initializeFromInputFile(args[0]);
+        boolean didInitialize = initializeFromInputFile(args[0]);
 
-        if(!didInitialize) {
+        if (!didInitialize) {
             System.err.println("Failed to initialize the application!");
             System.exit(1);
         }
@@ -32,6 +32,7 @@ public class Scheduler {
     }
 
     private static boolean initializeFromInputFile(String resourceListFile) {
+
 		try {
 			Scanner scnr = new Scanner(new File(resourceListFile));
 			SimpleDateFormat f = new SimpleDateFormat("mm/dd/yyyy,hh:mm");
@@ -49,10 +50,8 @@ public class Scheduler {
 					String end = scnr.nextLine();
 					String org = scnr.nextLine();
 					String description = scnr.nextLine();
-					Date startDate = f.parse(start);
-					long startLong = startDate.getTime();
-					Date endDate = f.parse(end);
-					long endLong = endDate.getTime();
+					long startLong = convertToTime(start);
+					long endLong = convertToTime(end) ;
 					schedulerDB.addEvent(currentResourceName, startLong, endLong, name, org, description);
 				}
 			}
@@ -71,7 +70,7 @@ public class Scheduler {
 
             System.out.print("\nPlease Enter a command ([H]elp):");
             command = scanner.next();
-            switch(command.toLowerCase()) {
+            switch (command.toLowerCase()) {
                 case "v":
                     processDisplayCommand();
                     break;
@@ -85,30 +84,24 @@ public class Scheduler {
                     System.out.println("Quit");
                     break;
                 case "h":
-                    System.out.println("\nThis scheduler has commands that are entered as a single character indicated in [].\n"+
-                            "The main commands are to view, add, delete, or quit.\n"+
-                            "The first three main commands need a secondary command possibly with additional input.\n"+
-                            "A secondary command's additional input is described within <>.\n"+
-                            "Please note that a comma (,) in the add event command represents a need to press\n"+
-                            "the return character during the command. Also note that times must be in the format\n"+
-                            "of mm/dd/yyyy,hh:mm.\n"+
-                            "[v]iew\n"+
-                            "	[r] = view all resources\n"+
-                            "	[e] = view all events\n"+
-                            "	[t] <resource name> = view events in a resource\n"+
-                            "	[o] <organization name> = view events with an organization\n"+
-                            "	[n] <start time> <end time> = view events within a time range\n"+
-                            "	[s] <start time> <end time> <resource name> = view events within in a time range in a resource\n"+
-                            "[a]dd\n"+
-                            "	[r] <resource name> = add a resource\n"+
-                            "	[e] <resource name>, = add an event\n"+
-                            "		      <start time> <end time> <event name>, \n"+
-                            "		      <organization name>, \n"+
-                            "		      <event description>\n"+
-                            "[d]elete\n"+
-                            "	[r] <resource name> = delete a resource\n"+
-                            "	[e] <event start time> <resource name> = delete an event\n"+
-                            "[q]uit\n");
+                    System.out.println(
+                            "\nThis scheduler has commands that are entered as a single character indicated in [].\n"
+                                    + "The main commands are to view, add, delete, or quit.\n"
+                                    + "The first three main commands need a secondary command possibly with additional input.\n"
+                                    + "A secondary command's additional input is described within <>.\n"
+                                    + "Please note that a comma (,) in the add event command represents a need to press\n"
+                                    + "the return character during the command. Also note that times must be in the format\n"
+                                    + "of mm/dd/yyyy,hh:mm.\n" + "[v]iew\n" + "	[r] = view all resources\n"
+                                    + "	[e] = view all events\n" + "	[t] <resource name> = view events in a resource\n"
+                                    + "	[o] <organization name> = view events with an organization\n"
+                                    + "	[n] <start time> <end time> = view events within a time range\n"
+                                    + "	[s] <start time> <end time> <resource name> = view events within in a time range in a resource\n"
+                                    + "[a]dd\n" + "	[r] <resource name> = add a resource\n"
+                                    + "	[e] <resource name>, = add an event\n"
+                                    + "		      <start time> <end time> <event name>, \n"
+                                    + "		      <organization name>, \n" + "		      <event description>\n"
+                                    + "[d]elete\n" + "	[r] <resource name> = delete a resource\n"
+                                    + "	[e] <event start time> <resource name> = delete an event\n" + "[q]uit\n");
                     break;
                 default:
                     System.out.println("Unrecognized Command!");
@@ -118,13 +111,12 @@ public class Scheduler {
         scanner.close();
     }
 
-
     private static void processDisplayCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
         String subCommand = in.next();
-        switch(subCommand.toLowerCase()) {
-            //additional input in comments (comma means return)
+        switch (subCommand.toLowerCase()) {
+            // additional input in comments (comma means return)
             case "r":
                 printResourceList(schedulerDB.getResources());
                 break;
@@ -132,19 +124,18 @@ public class Scheduler {
                 printEventList(schedulerDB.getAllEvents());
                 break;
             case "t": // resource,
-//                printEventList(schedulerDB.getEventsInReource(scanner.nextLine().trim()));
+                 printEventList(schedulerDB.getEventsInResource(scanner.nextLine().trim()));
                 break;
             case "s": // start end resource,
-//                printEventList(schedulerDB.getEventsInRangeInReource(
-//                        convertToTime(scanner.next()), convertToTime(scanner.next()),
-//                        scanner.nextLine().trim()));
+                 printEventList(schedulerDB.getEventsInRangeInResource(
+                 convertToTime(scanner.next()), convertToTime(scanner.next()),
+                 scanner.nextLine().trim()));
                 break;
             case "o": // organization
                 printEventList(schedulerDB.getEventsForOrg(scanner.nextLine().trim()));
                 break;
             case "n": // start end
-                printEventList(schedulerDB.getEventsInRange(convertToTime(scanner.next()),
-                        convertToTime(scanner.next())));
+                printEventList(schedulerDB.getEventsInRange(convertToTime(scanner.next()), convertToTime(scanner.next())));
                 break;
             default:
                 System.out.println("Unrecognized Command!");
@@ -152,28 +143,28 @@ public class Scheduler {
         in.close();
     }
 
-    private static void processAddCommand(){
+    private static void processAddCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
         String subCommand = in.next();
-        switch(subCommand.toLowerCase()) {
-            case "r": //resource
-                if(!schedulerDB.addResource(scanner.nextLine().trim())){
+        switch (subCommand.toLowerCase()) {
+            case "r": // resource
+                if (!schedulerDB.addResource(scanner.nextLine().trim())) {
                     System.out.println("Could not add: no two resources may have the same name.");
-                }else{
+                } else {
                     System.out.println("Successfully added resource.");
                 }
                 break;
-            case "e": //resource, start end name, organization, description
-                try{
-                    if(!schedulerDB.addEvent(scanner.nextLine().trim(),
-                            convertToTime(scanner.next()), convertToTime(scanner.next()),
-                            scanner.nextLine().trim(), scanner.nextLine().trim(), scanner.nextLine().trim())){
+            case "e": // resource, start end name, organization, description
+                try {
+                    if (!schedulerDB.addEvent(scanner.nextLine().trim(), convertToTime(scanner.next()),
+                            convertToTime(scanner.next()), scanner.nextLine().trim(), scanner.nextLine().trim(),
+                            scanner.nextLine().trim())) {
                         System.out.println("Could not add: resource not found.");
-                    }else{
+                    } else {
                         System.out.println("Successfully added event.");
                     }
-                }catch(IntervalConflictException expt){
+                } catch (IntervalConflictException expt) {
                     System.out.println("Could not add: this event conflicted with an existing event.");
                 }
                 break;
@@ -183,25 +174,22 @@ public class Scheduler {
         in.close();
     }
 
-
-
-    private static void processDeleteCommand(){
+    private static void processDeleteCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
         String subCommand = in.next();
-        switch(subCommand.toLowerCase()) {
+        switch (subCommand.toLowerCase()) {
             case "r": // resource
-                if(!schedulerDB.removeResource(scanner.nextLine().trim())){
+                if (!schedulerDB.removeResource(scanner.nextLine().trim())) {
                     System.out.println("Could not delete. Resource not found.");
-                }else{
+                } else {
                     System.out.println("Successfully deleted resource.");
                 }
                 break;
-            case "e":  // resource, start
-                if(!schedulerDB.deleteEvent(convertToTime(scanner.next().trim()),
-                        scanner.nextLine().trim())){
+            case "e": // resource, start
+                if (!schedulerDB.deleteEvent(convertToTime(scanner.next().trim()), scanner.nextLine().trim())) {
                     System.out.println("Could not delete. Resource not found.");
-                }else{
+                } else {
                     System.out.println("Successfully deleted event.");
                 }
                 break;
@@ -211,38 +199,37 @@ public class Scheduler {
         in.close();
     }
 
-    private static void printResourceList(List<Resource> list){
+    private static void printResourceList(List<Resource> list) {
         Iterator<Resource> itr = list.iterator();
-        if(!itr.hasNext()){
+        if (!itr.hasNext()) {
             System.out.println("No resources to display.");
         }
-        while(itr.hasNext()){
+        while (itr.hasNext()) {
             System.out.println(itr.next().getName());
         }
     }
 
-    private static void printEventList(List<Event> list){
+    private static void printEventList(List<Event> list) {
         Iterator<Event> itr = list.iterator();
-        if(!itr.hasNext()){
+        if (!itr.hasNext()) {
             System.out.println("No events to display.");
         }
-        while(itr.hasNext()){
+        while (itr.hasNext()) {
             System.out.println("\n" + itr.next().toString());
         }
     }
 
-    private static long convertToTime(String time){
+    private static long convertToTime(String time) {
         long result = 0;
         Format format = new SimpleDateFormat("MM/dd/yyyy,HH:mm");
-        try{
+        try {
             Date date = (Date) format.parseObject(time);
-            result = date.getTime()/1000;
-        }catch(Exception e){
+            result = date.getTime() / 1000;
+        } catch (Exception e) {
             System.out.println("Dates are not formatted correctly.  Must be \"MM/dd/yyyy,HH:mm\"");
         }
         return result;
     }
 
 }
-
 
