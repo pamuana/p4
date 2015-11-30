@@ -1,4 +1,5 @@
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Event represents events to be held in .
@@ -82,9 +83,9 @@ public class Event implements Interval{
 
     @Override
     public String toString(){
-    	SimpleDateFormat f = new SimpleDateFormat("mm/dd/yyyy,hh:mm");
-    	 Date dateStart = new Date(start);
-    	 Date dateEnd = new Date(end);
+    	SimpleDateFormat f = new SimpleDateFormat("MM/dd/yyyy,HH:mm");
+    	 Date dateStart = new Date(start * 1000);
+    	 Date dateEnd = new Date(end * 1000);
     	 
          String startString = f.format(dateStart);
          String endString = f.format(dateEnd);
