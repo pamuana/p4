@@ -1,3 +1,26 @@
+//////////////////////////////////////////////////////////////////////////////
+//                   ALL STUDENTS COMPLETE THESE SECTIONS
+// Title:            Scheduler.java
+// Files:            Event Interval IntervalBST IntervalBSTIterator 
+//		IntervalBSTnode IntervalConflictException Resource SchedulerDB 
+//		SortedListADT
+//
+// Semester:         CS 367 Fall 2015
+//
+// Author:           Anupama Bhattacharya
+// Email:            abhattachar4@wisc.edu
+// CS Login:         anupama
+// Lecturer's Name:  Skrenty
+//
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+//
+//
+// Pair Partner:     josh mcgrath
+// Email:            jmcgrath4@wisc.edu
+// CS Login:         mcgrath
+// Lecturer's Name:  Skrentny
+//////////////////////////////////////////////////////////////////////////////
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.Format;
@@ -7,12 +30,21 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * Maintains user friendly interface and communicates changes to 
+ * the DataBase
+ *
+ * @author Anupama Bhattacharya
+ */
 public class Scheduler {
 
-    private static SchedulerDB schedulerDB = new SchedulerDB();
-    private static Scanner scanner = null;
-
+    private static SchedulerDB schedulerDB = new SchedulerDB();//Database
+    private static Scanner scanner = null; //Initializes scanner
+    /**
+     * Starts program by intializing data and opening up the interface
+     *
+     * @param String name of ResourceFile 
+     */
     public static void main(String args[]) {
         if (args.length != 1) {
             System.err.println("Usage: java Scheduler <resourceListFile>");
@@ -30,7 +62,12 @@ public class Scheduler {
 
         processUserCommands();
     }
-
+    /**
+     * Inputs all the data from resourceListFile to the Database
+     *
+     * @param StringString resourceListFile
+     * @return boolean of success
+     */
     private static boolean initializeFromInputFile(String resourceListFile) {
 
 		try {
@@ -62,7 +99,10 @@ public class Scheduler {
 			return false;
 		}
 	}
-
+    /**
+     * Processes what to do with the user's commands
+     *
+     */
     private static void processUserCommands() {
         scanner = new Scanner(System.in);
         String command = null;
@@ -110,7 +150,10 @@ public class Scheduler {
         } while (!command.equalsIgnoreCase("q"));
         scanner.close();
     }
-
+    /**
+     * Displays the the interface and communicates with user
+     *
+     */
     private static void processDisplayCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
@@ -142,7 +185,9 @@ public class Scheduler {
         }
         in.close();
     }
-
+    /**
+     * Processes the command to add a resouce or event
+     */
     private static void processAddCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
@@ -173,7 +218,9 @@ public class Scheduler {
         }
         in.close();
     }
-
+    /**
+     * Processes the user command to delete a resource or event
+     */
     private static void processDeleteCommand() {
         String restOfLine = scanner.next();
         Scanner in = new Scanner(restOfLine);
@@ -198,7 +245,11 @@ public class Scheduler {
         }
         in.close();
     }
-
+    /**
+     * Prints out list of Resources given
+     *
+     * @param List of Resources
+     */
     private static void printResourceList(List<Resource> list) {
         Iterator<Resource> itr = list.iterator();
         if (!itr.hasNext()) {
@@ -208,7 +259,11 @@ public class Scheduler {
             System.out.println(itr.next().getName());
         }
     }
-
+    /**
+     * Prints out list of events given
+     *
+     * @param List of events
+     */
     private static void printEventList(List<Event> list) {
         Iterator<Event> itr = list.iterator();
         if (!itr.hasNext()) {
@@ -218,7 +273,12 @@ public class Scheduler {
             System.out.println("\n" + itr.next().toString());
         }
     }
-
+    /**
+     * Converts the date from string form to a long
+     *
+     * @param String version of date
+     * @return long version of date
+     */
     private static long convertToTime(String time) {
         long result = 0;
         Format format = new SimpleDateFormat("MM/dd/yyyy,HH:mm");
